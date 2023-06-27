@@ -162,7 +162,8 @@ def gen_dict(path):
     if not PSI is None:
         print("PSI already loaded from hard drive")
     else:
-        
+        print('Creating dictionary PSI')
+
         PSI = []
         
         #create one dico of delay for each SAR position
@@ -209,74 +210,74 @@ def gen_dict(path):
             PSI.append(Psi_n)
         PSI = np.hstack(PSI)
         np.save(path,PSI)
-        
+        print(f"Dictionary saved in relative path : {path}")
     return PSI
 
 
 
 
-def CS(PSI,path):
+# def CS(PSI,path):
     
-    try:
-        Phi = np.load(path)
-    except FileNotFoundError:
-        Phi = None
-        print('Saved compressive matrix Phi not found')
+#     try:
+#         Phi = np.load(path)
+#     except FileNotFoundError:
+#         Phi = None
+#         print('Saved compressive matrix Phi not found')
     
-    if Phi is not None:
-        print("Phi already loaded from hard drive")
-    else:
+#     if Phi is not None:
+#         print("Phi already loaded from hard drive")
+#     else:
         
-        Q1 = round(0.25 * M)
-        Q2 = round(1 * N)
+#         Q1 = round(0.25 * M)
+#         Q2 = round(1 * N)
         
-        theta = np.zeros([Q2,N])
-        indsq2 = np.sort(np.random.choice(N,Q2,replace=False))
-        for i,row in enumerate(theta):
-            row[indsq2[i]] = 1
+#         theta = np.zeros([Q2,N])
+#         indsq2 = np.sort(np.random.choice(N,Q2,replace=False))
+#         for i,row in enumerate(theta):
+#             row[indsq2[i]] = 1
         
-        Iq1 = np.identity(Q1)
-        diag_phis = []
-        indsq1 = np.sort(np.random.choice(M,Q1,replace=False))
-        for n in range(N):
-            phi_n = np.zeros([Q1,M])
-            for i,row in enumerate(phi_n):
-                row[indsq1[i]] = 1
+#         Iq1 = np.identity(Q1)
+#         diag_phis = []
+#         indsq1 = np.sort(np.random.choice(M,Q1,replace=False))
+#         for n in range(N):
+#             phi_n = np.zeros([Q1,M])
+#             for i,row in enumerate(phi_n):
+#                 row[indsq1[i]] = 1
             
-            diag_phis.append(phi_n)
-        diag_phis = block_diag(*diag_phis)
-        Phi = np.kron(theta,Iq1) @ diag_phis
+#             diag_phis.append(phi_n)
+#         diag_phis = block_diag(*diag_phis)
+#         Phi = np.kron(theta,Iq1) @ diag_phis
     
-    #np.save("../Phi_csmp",Phi)
+#     #np.save("../Phi_csmp",Phi)
     
-    try:
-        Phi_small = np.load("Phismall_csmp.npy")
-    except FileNotFoundError:
-        Phi_small = None
-        print('Saved compressive matrix Phi_small not found')
+#     try:
+#         Phi_small = np.load("Phismall_csmp.npy")
+#     except FileNotFoundError:
+#         Phi_small = None
+#         print('Saved compressive matrix Phi_small not found')
     
-    if Phi_small is not None:
-        print("Phi_small already loaded from hard drive")
-    else:
-        Phi_small = np.zeros([Q1,M])
-        for i,row in enumerate(Phi_small):
-            row[indsq1[i]] = 1
+#     if Phi_small is not None:
+#         print("Phi_small already loaded from hard drive")
+#     else:
+#         Phi_small = np.zeros([Q1,M])
+#         for i,row in enumerate(Phi_small):
+#             row[indsq1[i]] = 1
             
-    #np.save("../Phismall_csmp",Phi_small)
+#     #np.save("../Phismall_csmp",Phi_small)
     
-    #Create the reduced dictionnary by applying Phi to each of the R Psi
-    try:
-        PhiPsi = np.load("PhiPsi_csmp_R2.npy")
-    except FileNotFoundError:
-        PhiPsi = None
-        print('Saved compressed dict PhiPsi not found')
+#     #Create the reduced dictionnary by applying Phi to each of the R Psi
+#     try:
+#         PhiPsi = np.load("PhiPsi_csmp_R2.npy")
+#     except FileNotFoundError:
+#         PhiPsi = None
+#         print('Saved compressed dict PhiPsi not found')
     
-    if PhiPsi is not None:
-        print("PhiPsi already loaded from hard drive")
-    else:
-        PhiPsi = [Phi @ Psi for Psi in PSI]
-        PhiPsi = np.hstack(PhiPsi)
+#     if PhiPsi is not None:
+#         print("PhiPsi already loaded from hard drive")
+#     else:
+#         PhiPsi = [Phi @ Psi for Psi in PSI]
+#         PhiPsi = np.hstack(PhiPsi)
     
-    #np.save("PhiPsi_csmp_R2",PhiPsi)
-    Phi = jnp.array(Phi,dtype=jnp.complex64)
-    PhiPsi = jnp.array(PhiPsi,dtype=jnp.complex64)
+#     #np.save("PhiPsi_csmp_R2",PhiPsi)
+#     Phi = jnp.array(Phi,dtype=jnp.complex64)
+#     PhiPsi = jnp.array(PhiPsi,dtype=jnp.complex64)
