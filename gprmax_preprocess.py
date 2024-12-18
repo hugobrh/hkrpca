@@ -65,32 +65,12 @@ plt.show()
 
 #%%
 
-pulse_filename = 'ricker.txt'
-#pulse_filename = 'chirp.txt'
-
-pulse = np.loadtxt(gprmax_dir+pulse_filename,skiprows=1)
-embed_pulse = np.zeros(itse)
-embed_pulse[:len(pulse)] = pulse
-plt.plot(embed_pulse)
-plt.show()
-
-#%%
-
 freqs = np.fft.fftfreq(n=itse,d=dt)[:itse//2]
 select_freqs = (freqs>=1e9)&(freqs<=3e9)
 
-embed_pulse_fft = np.fft.fft(embed_pulse)
-psd= np.abs(embed_pulse_fft)[:len(embed_pulse_fft)//2]
-psd = psd/np.max(psd)
-psd_log = 20*np.log10(psd)
-
-plt.plot(freqs[select_freqs],psd_log[select_freqs])
-plt.axhline(y=-100,ls='--')
-plt.show()
-
 #%%
 
-Bscan_fft = np.array([np.fft.fft(embed_Bscan[:,i]) * np.conj(embed_pulse_fft) for i in range(embed_Bscan.shape[1])]).T
+Bscan_fft = np.array([np.fft.fft(embed_Bscan[:,i]) for i in range(embed_Bscan.shape[1])]).T
 plt.plot(freqs[select_freqs],np.abs(Bscan_fft[:,0][:itse//2][select_freqs]))
 plt.show()
 
